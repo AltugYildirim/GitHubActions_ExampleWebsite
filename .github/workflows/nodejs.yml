@@ -38,3 +38,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.github }}
         SONAR_TOKEN: ${{ secrets.sonarcloud }}
+    - name: Run Snyk to check for vulnerabilities
+      uses: snyk/actions/node@master
+      env:
+        SNYK_TOKEN: ${{ secrets.snyk }}
+      with:
+        command: monitor
