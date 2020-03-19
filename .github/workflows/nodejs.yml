@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [10.x] #[10.x, 12.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -33,3 +33,8 @@ jobs:
     - run: npm test
       env:
         CI: true
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master  
+      env:
+        GITHUB_TOKEN: ${{ secrets.github }}
+        SONAR_TOKEN: ${{ secrets.sonarcloud }}
