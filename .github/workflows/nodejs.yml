@@ -71,9 +71,10 @@ jobs:
     # Deploy app to AKS
     - uses: azure/k8s-deploy@v1 
       with:
+        namespace: |
+          githubactionsdemo
         manifests: |
           kubernetes/demodeployment.yaml
-          namespace: githubactionsdemo
         images: |
           acraltug.azurecr.io/k8sdemo:${{ github.sha }} 
         imagepullsecrets: |
