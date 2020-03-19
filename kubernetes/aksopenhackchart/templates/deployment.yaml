@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: softwareone-svc
+  namespace: {{ .Values.namespace }}
+  labels: 
+    name: softwareone-svc
+spec: 
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+  selector:
+    name: softwareone-app
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata: 
+  name: softwareone-deploy
+  namespace: {{ .Values.namespace }}
+  labels: 
+    name: softwareone-app
+spec: 
+  replicas: 1
+  template: 
+    metadata:
+      labels: 
+        name: softwareone-app
+    spec:
+      imagePullSecrets:
+        - name: acr-secret
+      containers:
+      - image: aksopenhack2019.azurecr.io/aksopenhack2019:{{ .Values.image.tag }}
+        name: aksopenhack-container
+        env:
+        - name: environment
+          value: {{ .Values.environment }}
+        ports:
+        - containerPort: 3000
+          name: softwareone-app
+        imagePullPolicy: Always
+      restartPolicy: Always
