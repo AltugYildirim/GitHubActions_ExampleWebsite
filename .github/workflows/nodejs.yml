@@ -73,6 +73,7 @@ jobs:
       with:
         manifests: |
           kubernetes/demodeployment.yaml
+          namespace: githubactionsdemo
         images: |
           acraltug.azurecr.io/k8sdemo:${{ github.sha }} 
         imagepullsecrets: |
