@@ -3,10 +3,11 @@
 
 name: Node.js CI
 
-#  push:
-#    branches: [ master ]  
-
-on: [push] 
+on:
+  push:
+    branches:
+      - master
+      - actions
   pull_request:
     branches: [ master ]
 
