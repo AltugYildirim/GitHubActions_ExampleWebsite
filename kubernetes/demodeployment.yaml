@@ -1,18 +1,13 @@
----
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: test
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: prod
+  name: githubactionsdemo
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: softwareone-svc
+  namespace: githubactionsdemo
   labels: 
     name: softwareone-svc
 spec: 
@@ -28,6 +23,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata: 
   name: softwareone-deploy
+  namespace: githubactionsdemo
   labels: 
     name: softwareone-app
 spec: 
@@ -40,8 +36,8 @@ spec:
       imagePullSecrets:
         - name: acr-secret
       containers:
-      - image: aksopenhack2019.azurecr.io/aksopenhack2019:latest
-        name: aksopenhack-container
+      - image: acraltug.azurecr.io/k8sdemo:${{ github.sha }} 
+        name: githubactions-container
         resources: 
           requests:
             cpu: "20m"

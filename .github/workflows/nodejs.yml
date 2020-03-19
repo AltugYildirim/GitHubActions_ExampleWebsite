@@ -66,5 +66,17 @@ jobs:
         container-registry-url: acraltug.azurecr.io
         container-registry-username: ${{ secrets.REGISTRY_USERNAME }} 
         container-registry-password: ${{ secrets.REGISTRY_PASSWORD }} 
-        secret-name: demo-k8s-secret
+        secret-name: acr-secret
         namespace: githubactionsdemo
+    # Deploy app to AKS
+    - uses: azure/k8s-deploy@v1 
+      with:
+        manifests: |
+          manifests/deployment.yml
+          manifests/service.yml 
+        images: |
+          acraltug.azurecr.io/k8sdemo:${{ github.sha }} 
+        imagepullsecrets: |
+          acr-secret
+          namespace: githubactionsdemo
+      
