@@ -44,3 +44,12 @@ jobs:
         SNYK_TOKEN: ${{ secrets.snyk }}
       with:
         command: monitor
+    # Connect to Azure Container registry (ACR)
+    - uses: azure/docker-login@v1 with:
+      login-server: acraltug.azurecr.io
+      username: ${{ secrets.REGISTRY_USERNAME }} 
+      password: ${{ secrets.REGISTRY_PASSWORD }}
+    # Docker build and push to a Azure Container registry (ACR)
+    - run: |
+       docker build . -t demo.azurecr.io/k8sdemo:${{ github.sha }} -f Dockerfile.prod
+       docker push demo.azurecr.io/k8sdemo:${{ github.sha }}
