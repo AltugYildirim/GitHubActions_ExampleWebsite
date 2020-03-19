@@ -1,8 +1,8 @@
 # Node & Express Demo App for Azure DevOps
 
-> Build Your First CI/CD Pipeline using Azure DevOps with this Demo App.
+> Build Your First CI/CD Pipeline using Github Actions with this Demo App.
 
-This is a Node and Express web application used to demonstrate CI/CD with Azure DevOps. You can clone this repo and use it within Azure DevOps to build, test, and release to an Azure App Service web app.
+This is a Node and Express web application used to demonstrate CI/CD with Azure DevOps. You can clone this repo and use it within Github Actions to build, test, and release to an Azure App Service web app.
 
 ## Running and Testing Locally:
 
@@ -50,16 +50,15 @@ docker run --name techsummit techsummit
 ```
 ### Author
 
-Hakki Ogretmen
-[@hakki_ogretmen](https://twitter.com/hakki_ogretmen)
+Altug Yildirim
+LinkedIn: https://tr.linkedin.com/in/altug-yildirim
 
 ### Version
 
-2.0.0
+3.0.0
 
 ### License
 
 This project is licensed under the Apache License 2.0
 
-Thank you Mike Pfeiffer for the first version of the code.
-[@mike_pfeiffer](https://twitter.com/mike_pfeiffer)
+Thank you Mike Pfeiffer for the first version of the code and thanks Hakki Ogretmen for the second one! :)
