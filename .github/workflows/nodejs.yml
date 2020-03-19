@@ -29,14 +29,15 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Build Code v2.2
-      run: echo ${{ secrets.sonarcloud }}
+      run: echo ${{ secrets.sonarcloud2 }}
+      run: echo "hello"
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
       env:
         CI: true
     - name: SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@master  
+      uses: sonarsource/sonarcloud-github-action@actions  
       env:
-        GITHUB_TOKEN: ${{ secrets.sonarcloud }}
+        GITHUB_TOKEN: ${{ secrets.sonarcloud2 }}
         SONAR_TOKEN: ${{ secrets.github }}
