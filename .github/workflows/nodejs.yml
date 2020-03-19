@@ -52,5 +52,17 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
     # Docker build and push to a Azure Container registry (ACR)
     - run: |
-       docker build . -t demo.azurecr.io/k8sdemo:${{ github.sha }} -f Dockerfile.prod
-       docker push demo.azurecr.io/k8sdemo:${{ github.sha }}
+       docker build . -t acraltug.azurecr.io/k8sdemo:${{ github.sha }} -f Dockerfile.prod
+       docker push acraltug.azurecr.io/k8sdemo:${{ github.sha }}
+    # Set the target AKS cluster.
+    - uses: azure/aks-set-context@v1 with:
+      creds: '${{ secrets.AZURE_CREDENTIALS }}' 
+      cluster-name: swoaks01
+      resource-group: altug
+    # Create imagepullsecret for Azure Container registry (ACR)
+    - uses: azure/k8s-create-secret@v1 with:
+      container-registry-url: acraltug.azurecr.io
+      container-registry-username: ${{ secrets.REGISTRY_USERNAME }} 
+      container-registry-password: ${{ secrets.REGISTRY_PASSWORD }} 
+      secret-name: demo-k8s-secret
+      namespace: githubactionsdemo
