@@ -61,6 +61,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:    
+    # download binary
+    - uses: actions/checkout@v2
+    # start AKS things
     - uses: azure/aks-set-context@v1 
       with:
         creds: '${{ secrets.AZURE_CREDENTIALS }}' 
