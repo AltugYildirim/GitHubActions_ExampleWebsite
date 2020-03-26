@@ -58,7 +58,7 @@ jobs:
     # Set the target AKS cluster.
   deployment:
     # deploy to AKS
-    needs: build    
+    # needs: build    
     - uses: azure/aks-set-context@v1 
       with:
         creds: '${{ secrets.AZURE_CREDENTIALS }}' 
