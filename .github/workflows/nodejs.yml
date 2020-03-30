@@ -120,7 +120,7 @@ jobs:
         milestone: 1
         project: Example Project
         project-column: To do
-        branch: actions
+        branch: example-patches
         request-to-parent: false
     - name: Check outputs
       run: |
