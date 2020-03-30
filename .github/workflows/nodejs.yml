@@ -128,8 +128,8 @@ jobs:
         reviewers: altugyildirim
         team-reviewers: owners, maintainers
         milestone: 1
-        project: Example Project
-        project-column: To do
+        #project: Example Project
+        #project-column: To do
         branch: example-patches
         request-to-parent: false
     - name: Check outputs
