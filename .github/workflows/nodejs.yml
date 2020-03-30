@@ -11,7 +11,7 @@ on:
       - release/*
   pull_request:
     branches:
-      - master
+      - writeanything
 
 jobs:
   build:
@@ -108,6 +108,9 @@ jobs:
     ## generating report and pull request
     - name: Create report file
       run: date +%s > report.txt
+    - name: AUTHORS
+      run: |
+        git log --format='%aN <%aE>%n%cN <%cE>' | sort -u > AUTHORS
     - name: Create Pull Request
       id: cpr
       uses: peter-evans/create-pull-request@v2
@@ -121,4 +124,16 @@ jobs:
       run: |
         echo "Pull Request Number - ${{ env.PULL_REQUEST_NUMBER }}"
         echo "Pull Request Number - ${{ steps.cpr.outputs.pr_number }}"
+jobs:
+  slackNotification:
+    name: Slack Notification Demo
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Slack Notification Demo
+      uses: bryan-nice/slack-notification@master
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_TITLE: 'Slack Notification Demo'
+        SLACK_MESSAGE: 'Demo''ing the Slack Notification'
       
