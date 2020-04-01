@@ -7,7 +7,7 @@ on:
     branches:
       - master
       - actions
-      - release*
+      - release/*
   pull_request:
     branches:
       - writeanything
