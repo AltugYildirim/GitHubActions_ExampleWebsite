@@ -41,12 +41,11 @@ jobs:
       env:
         CI: true
     # SAST    
-    - name: SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@master  
-      env:
-        GITHUB_TOKEN: ${{ secrets.github }}
-        SONAR_TOKEN: ${{ secrets.sonarcloud }}
-      if: failure()
+    #- name: SonarCloud Scan
+    #  uses: sonarsource/sonarcloud-github-action@master  
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.github }}
+    #    SONAR_TOKEN: ${{ secrets.sonarcloud }}
     # SCA     
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/node@master
@@ -55,7 +54,13 @@ jobs:
       with:
         #command: monitor
         args: --severity-threshold=high
-
+    - name: Slack Notification for Snyk
+      uses: bryan-nice/slack-notification@master
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
+        SLACK_TITLE: 'Failure'
+        SLACK_MESSAGE: 'You got an error during SCA Step, Snyk! workflow: ${{ github.workflow }} '
+      if: failure()
     # Connect to Azure Container registry (ACR)
     # test
     - uses: azure/docker-login@v1 
