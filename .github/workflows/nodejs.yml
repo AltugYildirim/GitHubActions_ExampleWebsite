@@ -62,7 +62,7 @@ jobs:
       run: |
         echo "Pull Request Number - ${{ steps.test.outputs }}"
         echo "Pull Request Number - ${{ steps.unittest.status }}"
-        echo "Pull Request Number - ${{ jobs.build.env }}"
+        echo "Pull Request Number - $JOB_STATUS_UNIT"
       if: failure() || success()
     # SAST    
     #- name: SonarCloud Scan
