@@ -39,10 +39,12 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
     - name: Set Environment
+      id: test
       env:
-        JOB_STATUS_UNIT: ok  
+        JOB_STATUS_UNIT: nok  
       run: |
         echo $JOB_STATUS_UNIT
+        echo "::set-output name=action_fruit::strawberry"
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
@@ -58,8 +60,8 @@ jobs:
       if: failure()
     - name: Check outputs
       run: |
-        echo "Pull Request Number - ${{ steps.unitslack.outputs }}"
-        echo "Pull Request Number - ${{ steps.unitslack.outputs.sum.description }}"
+        echo "Pull Request Number - ${{ steps.test.outputs }}"
+        echo "Pull Request Number - ${{ steps.test.outputs.action_fruit }}"
         echo "Pull Request Number - $JOB_STATUS_UNIT"
       if: failure() || success()
     # SAST    
