@@ -153,8 +153,8 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: dev
-    #- name: Create report file
-    #  run: ${{ env.PULL_REQUEST_NUMBER }} > report.txt
+    - name: Create report file
+      run: ${{ env.PULL_REQUEST_NUMBER }} > report.txt
     - name: Check outputs
       run: |
         echo "Pull Request Number - ${{ env.PULL_REQUEST_NUMBER }}"
