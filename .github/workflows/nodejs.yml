@@ -43,12 +43,17 @@ jobs:
         CI: true
     - name: Slack Notification for Unit Tests
       uses: bryan-nice/slack-notification@master
+      id: unit
       env:
         JOB_STATUS_UNIT: nok
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Failure'
         SLACK_MESSAGE: 'You cannot pass the tests... Check your unit tests! workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}	'
       if: failure()
+    - name: Check outputs
+      run: |
+        echo "Pull Request Number - ${{ env.JOB_STATUS_UNIT }}"
+        echo "Pull Request Number - ${{ steps.unit.outputs.JOB_STATUS_UNIT }}"
     # SAST    
     #- name: SonarCloud Scan
     #  uses: sonarsource/sonarcloud-github-action@master  
@@ -64,7 +69,7 @@ jobs:
         #command: monitor
         args: --severity-threshold=high
     - name: Slack Notification for Snyk
-      if: $JOB_STATUS_UNIT == 'nok'
+      if: env.JOB_STATUS_UNIT == 'nok'
       uses: bryan-nice/slack-notification@master
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
