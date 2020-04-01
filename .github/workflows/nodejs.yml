@@ -40,6 +40,13 @@ jobs:
     - run: npm test
       env:
         CI: true
+    - name: Slack Notification for Unit Tests
+      uses: bryan-nice/slack-notification@master
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
+        SLACK_TITLE: 'Failure'
+        SLACK_MESSAGE: 'You cannot pass the tests... Check your unit tests! workflow: ${{ github.workflow }} action: ${{ github.event_path }} event: ${{ github.event_name }}	'
+      if: failure()
     # SAST    
     #- name: SonarCloud Scan
     #  uses: sonarsource/sonarcloud-github-action@master  
@@ -59,7 +66,7 @@ jobs:
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Failure'
-        SLACK_MESSAGE: 'You got an error during SCA Step, Snyk! workflow: ${{ github.workflow }} action: ${{ github.workflow }} event: ${{ github.event_name }}	'
+        SLACK_MESSAGE: 'You got an error during SCA Step, Snyk! workflow: ${{ github.workflow }} action: ${{ github.event_path }} event: ${{ github.event_name }}	'
       if: failure()
     # Connect to Azure Container registry (ACR)
     # test
