@@ -128,15 +128,15 @@ jobs:
         echo "Pull Request Number - ${{ steps.cpr.outputs.pr_number }}"
 
   slackNotification:
-    needs: deployment
+    # needs: deployment
     name: Slack Notification Demo
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Slack Notification Demo
+    - name: Slack Notification for Production
       uses: bryan-nice/slack-notification@master
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
-        SLACK_TITLE: 'Slack Notification Demo'
-        SLACK_MESSAGE: 'Your code is on production!'
+        SLACK_TITLE: 'Slack Notification for Production'
+        SLACK_MESSAGE: 'Your code is on production! pr number: ${{ env.PULL_REQUEST_NUMBER }} branch: ${{ github.ref }}'
       
