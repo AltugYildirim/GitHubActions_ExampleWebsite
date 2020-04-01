@@ -57,11 +57,13 @@ jobs:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Failure'
         SLACK_MESSAGE: 'You cannot pass the tests... Check your unit tests! workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}	'
+      run: |
+        echo "::set-output name=JOB_STATUS_UNIT::failed"
       if: failure()
     - name: Check outputs
       run: |
         echo "Pull Request Number - ${{ steps.test.outputs }}"
-        echo "Pull Request Number - ${{ steps.test.outputs.action_fruit }}"
+        echo "Pull Request Number - ${{ steps.unitslack.outputs.JOB_STATUS_UNIT }}"
         echo "Pull Request Number - $JOB_STATUS_UNIT"
       if: failure() || success()
     # SAST    
@@ -79,7 +81,7 @@ jobs:
         #command: monitor
         args: --severity-threshold=high
     - name: Slack Notification for Snyk
-      if: env.JOB_STATUS_UNIT == 'ok' && failure()
+      if: steps.unitslack.outputs.JOB_STATUS_UNIT != 'failed' && failure()
       uses: bryan-nice/slack-notification@master
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
