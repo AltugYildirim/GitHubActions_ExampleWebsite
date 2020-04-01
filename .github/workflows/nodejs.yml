@@ -40,11 +40,13 @@ jobs:
     - run: npm test
       env:
         CI: true
+    # SAST    
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master  
       env:
         GITHUB_TOKEN: ${{ secrets.github }}
         SONAR_TOKEN: ${{ secrets.sonarcloud }}
+    # SCA     
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/node@master
       env:
@@ -134,7 +136,7 @@ jobs:
     - name: Slack Notification Demo
       uses: bryan-nice/slack-notification@master
       env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Slack Notification Demo'
-        SLACK_MESSAGE: 'Demo''ing the Slack Notification'
+        SLACK_MESSAGE: 'Your code is on production!'
       
