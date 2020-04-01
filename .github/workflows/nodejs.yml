@@ -45,7 +45,7 @@ jobs:
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Failure'
-        SLACK_MESSAGE: 'You cannot pass the tests... Check your unit tests! workflow: ${{ github.workflow }} action: ${{ github.event_path }} event: ${{ github.event_name }}	'
+        SLACK_MESSAGE: 'You cannot pass the tests... Check your unit tests! workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}	'
       if: failure()
     # SAST    
     #- name: SonarCloud Scan
@@ -66,7 +66,7 @@ jobs:
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Failure'
-        SLACK_MESSAGE: 'You got an error during SCA Step, Snyk! workflow: ${{ github.workflow }} action: ${{ github.event_path }} event: ${{ github.event_name }}	'
+        SLACK_MESSAGE: 'You got an error during SCA Step, Snyk! workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}	'
       if: failure()
     # Connect to Azure Container registry (ACR)
     # test
@@ -150,7 +150,7 @@ jobs:
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Slack Notification for Staging'
-        SLACK_MESSAGE: 'Your code is on staging! pr number: ${{ steps.cpr.outputs.pr_number }} workflow: ${{ github.workflow }}'
+        SLACK_MESSAGE: 'Your code is on staging! pr number: ${{ steps.cpr.outputs.pr_number }} workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}'
     - name: Slack Notification for Failure
       uses: bryan-nice/slack-notification@master
       env:
