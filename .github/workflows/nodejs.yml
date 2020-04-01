@@ -59,7 +59,7 @@ jobs:
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Failure'
-        SLACK_MESSAGE: 'You got an error during SCA Step, Snyk! workflow: ${{ github.workflow }} '
+        SLACK_MESSAGE: 'You got an error during SCA Step, Snyk! workflow: ${{ github.workflow }} action: ${{ github.workflow }} event: ${{ github.event_name }}	'
       if: failure()
     # Connect to Azure Container registry (ACR)
     # test
