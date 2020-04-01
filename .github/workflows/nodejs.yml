@@ -1,5 +1,4 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+## Altug Yildirim
 
 name: Node.js CI
 
@@ -60,7 +59,7 @@ jobs:
         echo "Pull Request Number - ${{ steps.test.outputs }}"
         echo "Pull Request Number - ${{ steps.unitslack.outputs.JOB_STATUS_UNIT }}"
         echo "Pull Request Number - $JOB_STATUS_UNIT"
-      if: failure() || success()
+      if: always()
     # SAST    
     #- name: SonarCloud Scan
     #  uses: sonarsource/sonarcloud-github-action@master  
@@ -171,5 +170,5 @@ jobs:
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Failure'
-        SLACK_MESSAGE: 'You got an error during staging deployment period! workflow: ${{ github.workflow }} '
+        SLACK_MESSAGE: 'You got an error during staging deployment period! pr number: ${{ steps.cpr.outputs.pr_number }} workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}'
       if: failure()
