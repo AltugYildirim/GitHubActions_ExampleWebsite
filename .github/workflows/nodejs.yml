@@ -46,13 +46,14 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.github }}
         SONAR_TOKEN: ${{ secrets.sonarcloud }}
+      if: failure()
     # SCA     
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/node@master
       env:
         SNYK_TOKEN: ${{ secrets.snyk }}
       with:
-        command: monitor
+        #command: monitor
         args: --severity-threshold=high
 
     # Connect to Azure Container registry (ACR)
@@ -137,11 +138,11 @@ jobs:
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Slack Notification for Staging'
-        SLACK_MESSAGE: 'Your code is on staging! pr number: ${{ steps.cpr.outputs.pr_number }} branch: ${{ github.ref }}'
-      if: failure()
+        SLACK_MESSAGE: 'Your code is on staging! pr number: ${{ steps.cpr.outputs.pr_number }} workflow: ${{ github.workflow }}'
     - name: Slack Notification for Failure
       uses: bryan-nice/slack-notification@master
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Failure'
-        SLACK_MESSAGE: 'You got an error during staging deployment period!'
+        SLACK_MESSAGE: 'You got an error during staging deployment period! workflow: ${{ github.workflow }} '
+      if: failure()
