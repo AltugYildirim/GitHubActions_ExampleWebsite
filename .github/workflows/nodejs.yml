@@ -122,14 +122,11 @@ jobs:
       run: |
         echo "Pull Request Number - ${{ env.PULL_REQUEST_NUMBER }}"
         echo "Pull Request Number - ${{ steps.cpr.outputs.pr_number }}"
-    - name: Check outputs
-      run: |
-        echo "Pull Request Number - ${{ env.PULL_REQUEST_NUMBER }}"
-        echo "Pull Request Number - ${{ steps.cpr.outputs.pr_number }}"
+
 
   slackNotification:
-    # needs: deployment
-    name: Slack Notification Demo
+    needs: deployment
+    name: Slack Notification Staging
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
@@ -137,6 +134,6 @@ jobs:
       uses: bryan-nice/slack-notification@master
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
-        SLACK_TITLE: 'Slack Notification for Production'
-        SLACK_MESSAGE: 'Your code is on production! pr number: ${{ env.PULL_REQUEST_NUMBER }} branch: ${{ github.ref }}'
+        SLACK_TITLE: 'Slack Notification for Staging'
+        SLACK_MESSAGE: 'Your code is on staging! pr number: ${{ env.PULL_REQUEST_NUMBER }} branch: ${{ github.ref }}'
       
