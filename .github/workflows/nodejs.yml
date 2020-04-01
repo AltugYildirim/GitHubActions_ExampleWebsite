@@ -36,6 +36,9 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
+    - name: Print a greeting
+      env:
+        JOB_STATUS_UNIT: ok  
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
@@ -54,6 +57,7 @@ jobs:
       run: |
         echo "Pull Request Number - ${{ env.JOB_STATUS_UNIT }}"
         echo "Pull Request Number - ${{ steps.unit.outputs.JOB_STATUS_UNIT }}"
+      if: failure() || success()
     # SAST    
     #- name: SonarCloud Scan
     #  uses: sonarsource/sonarcloud-github-action@master  
@@ -69,7 +73,7 @@ jobs:
         #command: monitor
         args: --severity-threshold=high
     - name: Slack Notification for Snyk
-      if: env.JOB_STATUS_UNIT == 'nok'
+      if: env.JOB_STATUS_UNIT == 'ok' && failure()
       uses: bryan-nice/slack-notification@master
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
