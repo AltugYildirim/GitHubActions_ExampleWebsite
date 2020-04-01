@@ -38,13 +38,6 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
-    - name: Set Environment
-      id: test
-      env:
-        JOB_STATUS_UNIT: nok  
-      run: |
-        echo $JOB_STATUS_UNIT
-        echo "::set-output name=action_fruit::strawberry"
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
@@ -52,11 +45,13 @@ jobs:
         CI: true
     - name: Slack Notification for Unit Tests
       uses: bryan-nice/slack-notification@master
-      id: unitslack
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Failure'
         SLACK_MESSAGE: 'You cannot pass the tests... Check your unit tests! workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}	'
+      if: failure()
+    - name: Set Unit Test Status
+      id: unitslack 
       run: |
         echo "::set-output name=JOB_STATUS_UNIT::failed"
       if: failure()
