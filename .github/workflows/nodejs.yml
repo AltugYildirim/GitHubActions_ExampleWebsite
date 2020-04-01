@@ -39,6 +39,8 @@ jobs:
     - name: Print a greeting
       env:
         JOB_STATUS_UNIT: ok  
+      run: |
+        echo $JOB_STATUS_UNIT
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
