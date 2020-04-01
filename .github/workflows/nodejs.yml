@@ -73,7 +73,7 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.snyk }}
       with:
-        #command: monitor
+        command: monitor
         args: --severity-threshold=high
     - name: Slack Notification for Snyk
       if: steps.unitslack.outputs.JOB_STATUS_UNIT != 'failed' && failure()
@@ -145,9 +145,9 @@ jobs:
           namespace: githubactionsdemo
     ## generating report and pull request
 
-    - name: AUTHORS
-      run: |
-        git log --format='%aN <%aE>%n%cN <%cE>' | sort -u > AUTHORS
+    #- name: AUTHORS
+    #  run: |
+    #    git log --format='%aN <%aE>%n%cN <%cE>' | sort -u > AUTHORS
     - name: Create Pull Request
       id: cpr
       uses: peter-evans/create-pull-request@v2
