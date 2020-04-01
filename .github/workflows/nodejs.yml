@@ -56,8 +56,6 @@ jobs:
         SLACK_TITLE: 'Failure'
         SLACK_MESSAGE: 'You cannot pass the tests... Check your unit tests! workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}	'
       if: failure()
-    - env: 
-        JOB_STATUS_UNIT: nok
     - name: Check outputs
       run: |
         echo "Pull Request Number - ${{ steps.test.outputs }}"
