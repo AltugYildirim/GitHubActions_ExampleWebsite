@@ -15,7 +15,8 @@ on:
 
 jobs:
   build:
-
+    env:
+      JOB_STATUS_UNIT: ok
     runs-on: ubuntu-latest
 #    runs-on: ${{ matrix.os }}
     strategy:
@@ -37,6 +38,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
     - name: Print a greeting
+      id: test
       env:
         JOB_STATUS_UNIT: ok  
       run: |
@@ -44,11 +46,12 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+      id: unittest
       env:
         CI: true
     - name: Slack Notification for Unit Tests
       uses: bryan-nice/slack-notification@master
-      id: unit
+      id: unitslack
       env:
         JOB_STATUS_UNIT: nok
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
@@ -57,8 +60,9 @@ jobs:
       if: failure()
     - name: Check outputs
       run: |
-        echo "Pull Request Number - ${{ env.JOB_STATUS_UNIT }}"
-        echo "Pull Request Number - ${{ steps.unit.outputs.JOB_STATUS_UNIT }}"
+        echo "Pull Request Number - ${{ steps.test.outputs }}"
+        echo "Pull Request Number - ${{ steps.unittest.status }}"
+        echo "Pull Request Number - ${{ jobs.build.env }}"
       if: failure() || success()
     # SAST    
     #- name: SonarCloud Scan
