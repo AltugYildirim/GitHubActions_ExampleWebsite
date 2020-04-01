@@ -37,8 +37,7 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
-    - name: Print a greeting
-      id: test
+    - name: Set Environment
       env:
         JOB_STATUS_UNIT: ok  
       run: |
@@ -46,7 +45,6 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
-      id: unittest
       env:
         CI: true
     - name: Slack Notification for Unit Tests
@@ -58,10 +56,12 @@ jobs:
         SLACK_TITLE: 'Failure'
         SLACK_MESSAGE: 'You cannot pass the tests... Check your unit tests! workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}	'
       if: failure()
+    env: 
+        JOB_STATUS_UNIT: nok
     - name: Check outputs
       run: |
         echo "Pull Request Number - ${{ steps.test.outputs }}"
-        echo "Pull Request Number - ${{ steps.unittest.status }}"
+        echo "Pull Request Number - ${{ steps.unitslack.env.JOB_STATUS_UNIT }}"
         echo "Pull Request Number - $JOB_STATUS_UNIT"
       if: failure() || success()
     # SAST    
