@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - master
-      - actions
+      - dev
       - release/*
   pull_request:
     branches:
@@ -152,7 +152,7 @@ jobs:
       uses: peter-evans/create-pull-request@v2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        branch: actions
+        branch: dev
     #- name: Create report file
     #  run: ${{ env.PULL_REQUEST_NUMBER }} > report.txt
     - name: Check outputs
