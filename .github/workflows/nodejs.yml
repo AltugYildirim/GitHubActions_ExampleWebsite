@@ -30,7 +30,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Dump job context
       env:
-        JOB_CONTEXT: ${{ toJson(job) }}
+        JOB_STATUS: ${{ job.status }}
       run: echo "$JOB_CONTEXT"
     - uses: actions/cache@v1
       if: runner.os != 'Windows'
