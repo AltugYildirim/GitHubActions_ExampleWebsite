@@ -17,6 +17,7 @@ jobs:
   build:
     env:
       JOB_STATUS_UNIT: ok
+      JOB_STATUS_SCA: ok
     runs-on: ubuntu-latest
 #    runs-on: ${{ matrix.os }}
     strategy:
@@ -55,12 +56,9 @@ jobs:
         SLACK_TITLE: 'Failure'
         SLACK_MESSAGE: 'You cannot pass the tests... Check your unit tests! workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}	'
       if: failure()
-      outputs:
-        sum:
-          description: 'The sum of the inputs'
     - name: Check outputs
       run: |
-        echo "Pull Request Number - ${{ steps.unitslack.outputs.sum }}"
+        echo "Pull Request Number - ${{ steps.unitslack.outputs }}"
         echo "Pull Request Number - ${{ steps.unitslack.outputs.sum.description }}"
         echo "Pull Request Number - $JOB_STATUS_UNIT"
       if: failure() || success()
