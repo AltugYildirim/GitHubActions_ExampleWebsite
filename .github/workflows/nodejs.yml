@@ -73,7 +73,7 @@ jobs:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Build'
         SLACK_MESSAGE: 'Your build is completed! successfully pushed to repo acraltug.azurecr.io/k8sdemo:${{ github.sha }}'
-  deployment:
+  staging:
     # deploy to AKS
     needs: build
     runs-on: ubuntu-latest
@@ -138,4 +138,10 @@ jobs:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Slack Notification for Staging'
         SLACK_MESSAGE: 'Your code is on staging! pr number: ${{ steps.cpr.outputs.pr_number }} branch: ${{ github.ref }}'
-      
+      if: failure()
+    - name: Slack Notification for Failure
+      uses: bryan-nice/slack-notification@master
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
+        SLACK_TITLE: 'Failure'
+        SLACK_MESSAGE: 'You got an error during staging deployment period!'
