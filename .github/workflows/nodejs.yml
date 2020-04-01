@@ -53,6 +53,8 @@ jobs:
         SNYK_TOKEN: ${{ secrets.snyk }}
       with:
         command: monitor
+        args: --severity-threshold=high
+
     # Connect to Azure Container registry (ACR)
     # test
     - uses: azure/docker-login@v1 
@@ -135,5 +137,5 @@ jobs:
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Slack Notification for Staging'
-        SLACK_MESSAGE: 'Your code is on staging! pr number: ${{ env.PULL_REQUEST_NUMBER }} branch: ${{ github.ref }}'
+        SLACK_MESSAGE: 'Your code is on staging! pr number: ${{ steps.cpr.outputs.pr_number }} branch: ${{ github.ref }}'
       
