@@ -13,13 +13,6 @@ on:
 #    branches:
 #      - master
 
-      - actions
-      - release/*
-  pull_request:
-    branches:
-      - master
-
-
 jobs:
   build:
     env:
@@ -267,84 +260,3 @@ jobs:
         SLACK_TITLE: 'Failure'
         SLACK_MESSAGE: 'You got an error during production deployment period! pr number: ${{ env.PULL_REQUEST }} workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}'
       if: failure()
-
-        GITHUB_TOKEN: ${{ secrets.github }}
-        SONAR_TOKEN: ${{ secrets.sonarcloud }}
-    - name: Run Snyk to check for vulnerabilities
-      uses: snyk/actions/node@master
-      env:
-        SNYK_TOKEN: ${{ secrets.snyk }}
-      with:
-        command: monitor
-    # Connect to Azure Container registry (ACR)
-    # test
-    - uses: azure/docker-login@v1 
-      with:
-        login-server: acraltug.azurecr.io
-        username: ${{ secrets.REGISTRY_USERNAME }} 
-        password: ${{ secrets.REGISTRY_PASSWORD }}
-    # Docker build and push to a Azure Container registry (ACR)
-    - run: |
-       docker build . -t acraltug.azurecr.io/k8sdemo:${{ github.sha }} -f Dockerfile.prod
-       docker push acraltug.azurecr.io/k8sdemo:${{ github.sha }}
-    # Set the target AKS cluster.
-  deployment:
-    # deploy to AKS
-    needs: build
-    runs-on: ubuntu-latest
-    steps:    
-    # download binary
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v1
-      with:
-        python-version: "3.8.2"
-    - name: Install dependencies
-      run: |
-        echo "check python version"
-        python -V
-        python -m pip install --upgrade pip
-        python -m pip install pipenv
-    # start AKS things
-    - uses: azure/aks-set-context@v1 
-      with:
-        creds: '${{ secrets.AZURE_CREDENTIALS }}' 
-        cluster-name: swoaks01
-        resource-group: altug
-    # Create imagepullsecret for Azure Container registry (ACR)
-    - uses: azure/k8s-create-secret@v1 
-      with:
-        container-registry-url: acraltug.azurecr.io
-        container-registry-username: ${{ secrets.REGISTRY_USERNAME }} 
-        container-registry-password: ${{ secrets.REGISTRY_PASSWORD }} 
-        secret-name: acr-secret
-        namespace: githubactionsdemo
-    # Deploy app to AKS
-    - uses: azure/k8s-deploy@v1 
-      with:
-        namespace: githubactionsdemo
-        manifests: |
-          kubernetes/demodeployment.yaml
-        images: |
-          acraltug.azurecr.io/k8sdemo:${{ github.sha }} 
-        imagepullsecrets: |
-          acr-secret
-          namespace: githubactionsdemo
-    ## generating report and pull request
-    - name: Create report file
-      run: date +%s > report.txt
-    - name: Create Pull Request
-      id: cpr
-      uses: peter-evans/create-pull-request@v2
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Check outputs
-      run: |
-        echo "Pull Request Number - ${{ env.PULL_REQUEST_NUMBER }}"
-        echo "Pull Request Number - ${{ steps.cpr.outputs.pr_number }}"
-    - name: Check outputs
-      run: |
-        echo "Pull Request Number - ${{ env.PULL_REQUEST_NUMBER }}"
-        echo "Pull Request Number - ${{ steps.cpr.outputs.pr_number }}"
-      
-
