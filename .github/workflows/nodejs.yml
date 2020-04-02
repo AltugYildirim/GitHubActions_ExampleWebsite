@@ -6,12 +6,13 @@ on:
   push:
     branches:
       - master
+
       - dev
       - release/*
 #  pull_request:
 #    branches:
 #      - master
-# JOBLAR
+
 jobs:
   build:
     env:
@@ -254,6 +255,7 @@ jobs:
     - name: Slack Notification for Failure
       uses: bryan-nice/slack-notification@master
       env:
+
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Failure'
         SLACK_MESSAGE: 'You got an error during production deployment period! pr number: ${{ env.PULL_REQUEST }} workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}'
