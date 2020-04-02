@@ -184,7 +184,7 @@ jobs:
         pr_label: "auto-pr"                   # Comma-separated list (no spaces)
         pr_milestone: "Milestone 1"           # Milestone name
         github_token: ${{ secrets.GITHUB_TOKEN }}
-- name: Slack Notification for Staging
+    - name: Slack Notification for Staging
       uses: bryan-nice/slack-notification@master
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
