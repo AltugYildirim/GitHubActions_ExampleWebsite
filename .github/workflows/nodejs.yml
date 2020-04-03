@@ -134,9 +134,9 @@ jobs:
     - uses: azure/k8s-create-secret@v1 
       with:
         #login-server: acraltug.azurecr.io
-        login-server: subjerepo.azurecr.io
-        username: ${{ secrets.REGISTRY_USERNAME_SUBJE }} 
-        password: ${{ secrets.REGISTRY_PASSWORD_SUBJE }}
+        container-registry-url: subjerepo.azurecr.io
+        container-registry-username: ${{ secrets.REGISTRY_USERNAME_SUBJE }} 
+        container-registry-password: ${{ secrets.REGISTRY_PASSWORD_SUBJE }}
         secret-name: acr-secret
         namespace: githubactionsdemo
     # Deploy app to AKS
@@ -221,9 +221,9 @@ jobs:
     - uses: azure/k8s-create-secret@v1 
       with:
         #login-server: acraltug.azurecr.io
-        login-server: subjerepo.azurecr.io
-        username: ${{ secrets.REGISTRY_USERNAME_SUBJE }} 
-        password: ${{ secrets.REGISTRY_PASSWORD_SUBJE }}
+        container-registry-url: subjerepo.azurecr.io
+        container-registry-username: ${{ secrets.REGISTRY_USERNAME_SUBJE }} 
+        container-registry-password: ${{ secrets.REGISTRY_PASSWORD_SUBJE }}
         secret-name: acr-secret
         namespace: githubactionsdemo
     # Deploy app to AKS
