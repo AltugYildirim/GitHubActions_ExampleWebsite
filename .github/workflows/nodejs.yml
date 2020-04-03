@@ -10,6 +10,7 @@ on:
       - master
       - dev
       - release/*
+#      - bug/*      
 #  pull_request:
 #    branches:
 #      - master
@@ -88,20 +89,21 @@ jobs:
     # test
     - uses: azure/docker-login@v1 
       with:
-        login-server: acraltug.azurecr.io
-        username: ${{ secrets.REGISTRY_USERNAME }} 
-        password: ${{ secrets.REGISTRY_PASSWORD }}
+        #login-server: acraltug.azurecr.io
+        login-server: subjerepo.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME_SUBJE }} 
+        password: ${{ secrets.REGISTRY_PASSWORD_SUBJE }}
     # Docker build and push to a Azure Container registry (ACR)
     - run: |
-       docker build . -t acraltug.azurecr.io/k8sdemo:${{ github.sha }} -f Dockerfile.prod
-       docker push acraltug.azurecr.io/k8sdemo:${{ github.sha }}
+       docker build . -t subjerepo.azurecr.io/k8sdemo:${{ github.sha }} -f Dockerfile.prod
+       docker push subjerepo.azurecr.io/k8sdemo:${{ github.sha }}
     # Set the target AKS cluster.
     - name: Slack Notification for Build
       uses: bryan-nice/slack-notification@master
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
         SLACK_TITLE: 'Build'
-        SLACK_MESSAGE: 'Your build is completed! successfully pushed to repo acraltug.azurecr.io/k8sdemo:${{ github.sha }}'
+        SLACK_MESSAGE: 'Your build is completed! successfully pushed to repo subjerepo.azurecr.io/k8sdemo:${{ github.sha }}'
   staging:
     # deploy to AKS
     if: github.ref != 'refs/heads/master'
@@ -123,15 +125,18 @@ jobs:
     # start AKS things
     - uses: azure/aks-set-context@v1 
       with:
-        creds: '${{ secrets.AZURE_CREDENTIALS }}' 
-        cluster-name: swoaks01
-        resource-group: altug
+        creds: '${{ secrets.AZURE_CREDENTIALS_SUBJE }}' 
+        #cluster-name: swoaks01
+        cluster-name: subjeakscluster
+        #resource-group: altug
+        resource-group: Subje-AKS-RG
     # Create imagepullsecret for Azure Container registry (ACR)
     - uses: azure/k8s-create-secret@v1 
       with:
-        container-registry-url: acraltug.azurecr.io
-        container-registry-username: ${{ secrets.REGISTRY_USERNAME }} 
-        container-registry-password: ${{ secrets.REGISTRY_PASSWORD }} 
+        #login-server: acraltug.azurecr.io
+        login-server: subjerepo.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME_SUBJE }} 
+        password: ${{ secrets.REGISTRY_PASSWORD_SUBJE }}
         secret-name: acr-secret
         namespace: githubactionsdemo
     # Deploy app to AKS
@@ -141,7 +146,7 @@ jobs:
         manifests: |
           kubernetes/demodeployment.yaml
         images: |
-          acraltug.azurecr.io/k8sdemo:${{ github.sha }} 
+          subjerepo.azurecr.io/k8sdemo:${{ github.sha }} 
         imagepullsecrets: |
           acr-secret
           namespace: githubactionsdemo
@@ -162,7 +167,6 @@ jobs:
     #  run: |
     #    echo "Pull Request Number - ${{ env.PULL_REQUEST_NUMBER }}"
     #    echo "Pull Request Number - ${{ steps.cpr.outputs.pr_number }}"
-    - uses: actions/checkout@master
     
     - name: Slack Notification for Failure
       uses: bryan-nice/slack-notification@master
@@ -208,15 +212,18 @@ jobs:
     # start AKS things
     - uses: azure/aks-set-context@v1 
       with:
-        creds: '${{ secrets.AZURE_CREDENTIALS }}' 
-        cluster-name: swoaks01
-        resource-group: altug
+        creds: '${{ secrets.AZURE_CREDENTIALS_SUBJE }}' 
+        #cluster-name: swoaks01
+        cluster-name: subjeakscluster
+        #resource-group: altug
+        resource-group: Subje-AKS-RG
     # Create imagepullsecret for Azure Container registry (ACR)
     - uses: azure/k8s-create-secret@v1 
       with:
-        container-registry-url: acraltug.azurecr.io
-        container-registry-username: ${{ secrets.REGISTRY_USERNAME }} 
-        container-registry-password: ${{ secrets.REGISTRY_PASSWORD }} 
+        #login-server: acraltug.azurecr.io
+        login-server: subjerepo.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME_SUBJE }} 
+        password: ${{ secrets.REGISTRY_PASSWORD_SUBJE }}
         secret-name: acr-secret
         namespace: githubactionsdemo
     # Deploy app to AKS
@@ -226,35 +233,10 @@ jobs:
         manifests: |
           kubernetes/demodeployment.yaml
         images: |
-          acraltug.azurecr.io/k8sdemo:${{ github.sha }} 
+          subjerepo.azurecr.io/k8sdemo:${{ github.sha }} 
         imagepullsecrets: |
           acr-secret
-          namespace: githubactionsdemo
-    ## generating report and pull request
-    - name: Slack Notification for Production
-      uses: bryan-nice/slack-notification@master
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
-        SLACK_TITLE: 'Slack Notification for Production'
-        SLACK_MESSAGE: 'Your code is on production! pr number: ${{ env.PULL_REQUEST_NUMBER }} workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}'
-
-    #- name: AUTHORS
-    #  run: |
-    #    git log --format='%aN <%aE>%n%cN <%cE>' | sort -u > AUTHORS
-    # - name: Create Pull Request
-    #   id: cpr
-    #   uses: peter-evans/create-pull-request@v2
-    #   with:
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    #     branch: dev
-    #- name: Create report file
-    #  run: ${{ env.PULL_REQUEST_NUMBER }} > report.txt
-    #- name: Check outputs
-    #  run: |
-    #    echo "Pull Request Number - ${{ env.PULL_REQUEST_NUMBER }}"
-    #    echo "Pull Request Number - ${{ steps.cpr.outputs.pr_number }}"
-    - uses: actions/checkout@master
-    
+          namespace: githubactionsdemo    
     - name: Slack Notification for Failure
       uses: bryan-nice/slack-notification@master
       env:
