@@ -13,7 +13,7 @@ describe('/GET', () => {
             .get('/')
             .end((err, res) => {
                 res.should.have.status(200);
-                res.text.should.contain('AKS');
+                res.text.should.contain('Microsoft');
                 done();
             });
     });
