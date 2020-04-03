@@ -169,6 +169,7 @@ jobs:
         SLACK_TITLE: 'Failure'
         SLACK_MESSAGE: 'You got an error during staging deployment period! pr number: ${{ env.PULL_REQUEST }} workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}'
       if: failure()
+  # pull request job for staging    
   pull-request:
     if: github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/master'
     runs-on: ubuntu-latest
