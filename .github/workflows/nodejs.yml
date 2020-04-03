@@ -3,6 +3,8 @@
 name: Node.js CI
 
 on:
+  # schedule:
+  #   - cron: '30 10 * * *'
   push:
     branches:
       - master
@@ -102,6 +104,7 @@ jobs:
         SLACK_MESSAGE: 'Your build is completed! successfully pushed to repo acraltug.azurecr.io/k8sdemo:${{ github.sha }}'
   staging:
     # deploy to AKS
+    if: github.ref != 'refs/heads/master'
     needs: build
     runs-on: ubuntu-latest
     steps:    
@@ -259,3 +262,19 @@ jobs:
         SLACK_TITLE: 'Failure'
         SLACK_MESSAGE: 'You got an error during production deployment period! pr number: ${{ env.PULL_REQUEST }} workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}'
       if: failure()
+  
+  # pr_for_master:
+  #   runs-on: ubuntu-latest    
+  #   if: github.event == 'Schedule'
+  #   - name: pull-request
+  #     uses: repo-sync/pull-request@v2
+  #     with:
+  #       source_branch: ""                     # If blank, default: triggered branch
+  #       destination_branch: "dev"          # If blank, default: master
+  #       pr_title: "Pulling ${{ github.ref }} into dev"
+  #       pr_body: ":crown: *An automated PR*"  # Full markdown support, requires pr_title to be set
+  #       #pr_reviewer: "wei,worker"             # Comma-separated list (no spaces)
+  #       #pr_assignee: "wei,worker"             # Comma-separated list (no spaces)
+  #       pr_label: "auto-pr"                   # Comma-separated list (no spaces)
+  #       #pr_milestone: "Milestone 1"           # Milestone name
+  #       github_token: ${{ secrets.GITHUB_TOKEN }}
