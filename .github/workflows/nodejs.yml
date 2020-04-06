@@ -7,19 +7,16 @@ on:
   #   - cron: '30 10 * * *'
   push:
     branches:
-<<<<<<< HEAD
       - test
       # - master
       # - dev
       # - feature/*
       # - bug/*      
-=======
       - master
 
       - dev
       - release/*
 #      - bug/*      
->>>>>>> 297e7c8c09b2bac9589ee35733c72643b0b48eb0
 #  pull_request:
 #    branches:
 #      - master
