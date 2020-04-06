@@ -92,7 +92,7 @@ jobs:
         manifests: | 
           kubernetes/demodeployment.yaml
         images: |
-          arcaltug.azurecr.io/aksdemo:${{ github.sha }}
+          acraltug.azurecr.io/aksdemo:${{ github.sha }}
         imagepullsecrets: |
           acr-secret
           namespace: githubactionsdemo
