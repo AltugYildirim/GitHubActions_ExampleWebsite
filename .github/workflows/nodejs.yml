@@ -88,9 +88,9 @@ jobs:
     - uses: azure/k8s-deploy@v1
       with:
         namespace: githubactionsdemo
-        manifests: |
+        manifests: | 
           kubernetes/demodeployment.yaml
-         images: |
+        images: |
           arcaltug.azurecr.io/k8sdemo:${{ github.sha }}
         imagepullsecrets: |
           acr-secret
