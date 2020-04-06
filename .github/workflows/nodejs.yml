@@ -41,7 +41,8 @@ jobs:
       uses: snyk/actions/node@master
       env:
         SNYK_TOKEN: ${{ secrets.snyk }}
-      command: monitor
+      with:
+        command: monitor
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
       env:
