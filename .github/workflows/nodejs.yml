@@ -37,3 +37,80 @@ jobs:
     - run: npm test
       env:
         CI: true
+    - name: Run Snyk to check for vulnerabilities
+      uses: snyk/actions/node@master
+      env:
+        SNYK_TOKEN: ${{ secrets.snyk }}
+      command: monitor
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.github }}
+        SONAR_TOKEN: ${{ secrets.sonarcloud }}
+    # ACR bağlanıyoruz
+    - uses: azure/docker-login@v1
+      with:
+        login-server: acraltug.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    # imaj yaratıyoruz ve tagliyoruz
+    - run: |
+       docker build . -t acraltug.azurecr.io/aksdemo:${{ github.sha }}
+       docker push acraltug.azurecr.io/aksdemo:${{ github.sha }}
+    # slack notifikasyonunu at
+    - name: Slack Notification Demo
+      uses: bryan-nice/slack-notification@master
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_TITLE: 'Slack Notification for Build'
+        SLACK_MESSAGE: 'Your build is completed! pushed to acraltug.azurecr.io/aksdemo:${{ github.sha }}'
+  staging:
+    # sadece dev ve releaseden gelenleri kabul et
+    if: github.ref != 'refs/heads/master'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      # aks 'ye bağlan
+    - uses: azure/aks-set-context@v1
+      with:
+        creds: '${{ secrets.AZURE_CREDENTIALS }}'
+        cluster-name: swoaks01
+        resource-group: altug
+    - uses: azure/k8s-create-secret@v1
+      with:
+        container-registry-url: arcaltug.azurecr.io
+        container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
+        container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+        secret-name: acr-secret
+        namespace: githubactionsdemo
+      #aks'ye deploy
+    - uses: azure/k8s-deploy@v1
+      with:
+        namespace: githubactionsdemo
+        manifests: |
+          kubernetes/demodeployment.yaml
+         images: |
+          arcaltug.azurecr.io/k8sdemo:${{ github.sha }}
+        imagepullsecrets: |
+          acr-secret
+          namespace: githubactionsdemo
+    - name: Slack Notification Demo
+      uses: bryan-nice/slack-notification@master
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_TITLE: 'Slack Notification for Staging Environment'
+        SLACK_MESSAGE: 'Your app is on staging!'
+    - name: pull-request
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: ""                     # If blank, default: triggered branch
+        destination_branch: "dev"          # If blank, default: master
+        pr_title: "Pulling ${{ github.ref }} into master"
+        pr_body: ":crown: *An automated PR*"  # Full markdown support, requires pr_title to be set
+        #pr_reviewer: "wei,worker"             # Comma-separated list (no spaces)
+        #pr_assignee: "wei,worker"             # Comma-separated list (no spaces)
+        pr_label: "auto-pr"                   # Comma-separated list (no spaces)
+        #pr_milestone: "Milestone 1"           # Milestone name
+        github_token: ${{ secrets.github }}
+
