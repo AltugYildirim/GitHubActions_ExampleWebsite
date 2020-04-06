@@ -80,7 +80,7 @@ jobs:
         resource-group: altug
     - uses: azure/k8s-create-secret@v1
       with:
-        container-registry-url: arcaltug.azurecr.io
+        container-registry-url: acraltug.azurecr.io
         container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
         container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
         secret-name: acr-secret
