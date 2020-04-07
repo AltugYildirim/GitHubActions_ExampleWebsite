@@ -36,7 +36,8 @@ spec:
       imagePullSecrets:
         - name: acr-secret
       containers:
-      - image: arcaltug.azurecr.io/k8sdemo:${{ github.sha }} 
+#      - image: subjerepo.azurecr.io/k8sdemo:${{ github.sha }}
+      - image: subjerepo.azurecr.io/k8sdemo:${{ github.run_id }} 
         name: githubactions-container
         resources: 
           requests:
