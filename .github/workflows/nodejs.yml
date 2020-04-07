@@ -3,8 +3,8 @@
 name: Node.js CI
 
 on:
-  # schedule:
-  #   - cron: '30 10 * * *'
+  schedule:
+      - cron: '*/1 * * * *'
   push:
     branches:
       # - master
@@ -32,6 +32,8 @@ jobs:
 #        os: [ubuntu-latest, windows-latest,macOS-latest]
     steps:
     - uses: actions/checkout@v2
+    - run: |
+        echo ${{ github.event }} 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -250,18 +252,25 @@ jobs:
         SLACK_MESSAGE: 'You got an error during production deployment period! pr number: ${{ env.PULL_REQUEST }} workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}'
       if: failure()
   
-  # pr_for_master:
-  #   runs-on: ubuntu-latest    
-  #   if: github.event == 'Schedule'
-  #   - name: pull-request
-  #     uses: repo-sync/pull-request@v2
-  #     with:
-  #       source_branch: ""                     # If blank, default: triggered branch
-  #       destination_branch: "dev"          # If blank, default: master
-  #       pr_title: "Pulling ${{ github.run_id }} into dev"
-  #       pr_body: ":crown: *An automated PR*"  # Full markdown support, requires pr_title to be set
-  #       #pr_reviewer: "wei,worker"             # Comma-separated list (no spaces)
-  #       #pr_assignee: "wei,worker"             # Comma-separated list (no spaces)
-  #       pr_label: "auto-pr"                   # Comma-separated list (no spaces)
-  #       #pr_milestone: "Milestone 1"           # Milestone name
-  #       github_token: ${{ secrets.GITHUB_TOKEN }}
+  pr_for_master:
+    if: github.event == 'Schedule'
+    runs-on: ubuntu-latest    
+    - name: pull-request
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: "dev"                     # If blank, default: triggered branch
+        destination_branch: "master"          # If blank, default: master
+        pr_title: "Pulling ${{ github.run_id }} into dev"
+        pr_body: ":crown: *An automated PR*"  # Full markdown support, requires pr_title to be set
+        #pr_reviewer: "wei,worker"             # Comma-separated list (no spaces)
+        #pr_assignee: "wei,worker"             # Comma-separated list (no spaces)
+        pr_label: "auto-pr"                   # Comma-separated list (no spaces)
+        #pr_milestone: "Milestone 1"           # Milestone name
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Slack Notification for master pr
+      uses: bryan-nice/slack-notification@master
+      env:
+
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
+        SLACK_TITLE: 'Auto-PR for Master'
+        SLACK_MESSAGE: 'PR, dev to master is created! pr number: ${{ env.PULL_REQUEST }} workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}'
