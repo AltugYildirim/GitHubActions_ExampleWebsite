@@ -7,13 +7,11 @@ on:
   #   - cron: '30 10 * * *'
   push:
     branches:
-      - test
       # - master
       # - dev
       # - feature/*
       # - bug/*      
       - master
-
       - dev
       - release/*
 #      - bug/*      
