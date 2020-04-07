@@ -72,8 +72,8 @@ jobs:
       if: always()
     # SAST    
     - name: SonarCloud Scan
-     uses: sonarsource/sonarcloud-github-action@master  
-     env:
+      uses: sonarsource/sonarcloud-github-action@master  
+      env:
        GITHUB_TOKEN: ${{ secrets.githubs }}
        SONAR_TOKEN: ${{ secrets.sonarcloud_SUBJE }}
     # SCA     
