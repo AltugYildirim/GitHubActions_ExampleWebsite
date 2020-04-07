@@ -37,7 +37,7 @@ spec:
         - name: acr-secret
       containers:
 #      - image: subjerepo.azurecr.io/k8sdemo:${{ github.sha }}
-      - image: acraltug.azurecr.io/k8sdemo:${{ github.sha }} 
+      - image: subjerepo.azurecr.io/k8sdemo:${{ event.run_id }} 
         name: githubactions-container
         resources: 
           requests:
