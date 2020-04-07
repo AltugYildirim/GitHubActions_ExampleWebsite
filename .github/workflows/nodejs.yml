@@ -3,8 +3,8 @@
 name: Node.js CI
 
 on:
-  # schedule:
-  #   - cron: '30 10 * * *'
+  schedule:
+  - cron: '*/5 * * * *'
   push:
     branches:
       # - master
@@ -14,13 +14,14 @@ on:
       - master
       - dev
       - feature/*
-#      - bug/*      
+      - bug/*      
 #  pull_request:
 #    branches:
 #      - master
 
 jobs:
   build:
+    if: github.event_name == 'push'
     env:
       JOB_STATUS_UNIT: ok
       JOB_STATUS_SCA: ok
@@ -32,6 +33,8 @@ jobs:
 #        os: [ubuntu-latest, windows-latest,macOS-latest]
     steps:
     - uses: actions/checkout@v2
+    - run: |
+        echo ${{ github.event_name }} 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -68,16 +71,16 @@ jobs:
         echo "Pull Request Number - $JOB_STATUS_UNIT"
       if: always()
     # SAST    
-    #- name: SonarCloud Scan
-    #  uses: sonarsource/sonarcloud-github-action@master  
-    #  env:
-    #    GITHUB_TOKEN: ${{ secrets.github }}
-    #    SONAR_TOKEN: ${{ secrets.sonarcloud }}
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master  
+      env:
+       GITHUB_TOKEN: ${{ secrets.githubs }}
+       SONAR_TOKEN: ${{ secrets.sonarcloud_SUBJE }}
     # SCA     
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/node@master
       env:
-        SNYK_TOKEN: ${{ secrets.snyk }}
+        SNYK_TOKEN: ${{ secrets.snyk_SUBJE }}
       with:
         command: monitor
         args: --severity-threshold=high
@@ -110,7 +113,7 @@ jobs:
         SLACK_MESSAGE: 'Your build is completed! successfully pushed to repo subjerepo.azurecr.io/k8sdemo:${{ github.run_id }}'
   staging:
     # deploy to AKS
-    if: github.run_id != 'refs/heads/master'
+    if: github.run_id != 'refs/heads/master' &&  github.event_name == 'push'
     needs: build
     runs-on: ubuntu-latest
     steps:    
@@ -181,7 +184,7 @@ jobs:
       if: failure()
   # pull request job for staging    
   pull-request:
-    if: github.run_id != 'refs/heads/dev' && github.run_id != 'refs/heads/master'
+    if: github.run_id != 'refs/heads/dev' && github.run_id != 'refs/heads/master' && github.event_name == 'push'
     runs-on: ubuntu-latest
     needs: staging
     steps:
@@ -206,7 +209,7 @@ jobs:
         SLACK_MESSAGE: 'Your code is on staging! pr number: ${{ env.PULL_REQUEST_NUMBER }} workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}'
 
   production:
-    if: github.run_id == 'refs/heads/master'
+    if: github.run_id == 'refs/heads/master' && github.event_name == 'push'
     # deploy to AKS
     needs: build
     runs-on: ubuntu-latest
@@ -250,18 +253,26 @@ jobs:
         SLACK_MESSAGE: 'You got an error during production deployment period! pr number: ${{ env.PULL_REQUEST }} workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}'
       if: failure()
   
-  # pr_for_master:
-  #   runs-on: ubuntu-latest    
-  #   if: github.event == 'Schedule'
-  #   - name: pull-request
-  #     uses: repo-sync/pull-request@v2
-  #     with:
-  #       source_branch: ""                     # If blank, default: triggered branch
-  #       destination_branch: "dev"          # If blank, default: master
-  #       pr_title: "Pulling ${{ github.run_id }} into dev"
-  #       pr_body: ":crown: *An automated PR*"  # Full markdown support, requires pr_title to be set
-  #       #pr_reviewer: "wei,worker"             # Comma-separated list (no spaces)
-  #       #pr_assignee: "wei,worker"             # Comma-separated list (no spaces)
-  #       pr_label: "auto-pr"                   # Comma-separated list (no spaces)
-  #       #pr_milestone: "Milestone 1"           # Milestone name
-  #       github_token: ${{ secrets.GITHUB_TOKEN }}
+  pr_for_master:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest  
+    steps:  
+    - name: pull-request
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: "dev"                     # If blank, default: triggered branch
+        destination_branch: "master"          # If blank, default: master
+        pr_title: "Pulling ${{ github.run_id }} into dev"
+        pr_body: ":crown: *An automated PR*"  # Full markdown support, requires pr_title to be set
+        #pr_reviewer: "wei,worker"             # Comma-separated list (no spaces)
+        #pr_assignee: "wei,worker"             # Comma-separated list (no spaces)
+        pr_label: "auto-pr"                   # Comma-separated list (no spaces)
+        #pr_milestone: "Milestone 1"           # Milestone name
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Slack Notification for master pr
+      uses: bryan-nice/slack-notification@master
+      env:
+
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SUBJE }}
+        SLACK_TITLE: 'Auto-PR for Master'
+        SLACK_MESSAGE: 'PR, dev to master is created! pr number: ${{ env.PULL_REQUEST }} workflow: ${{ github.workflow }} run id: ${{ github.run_id	}}'
