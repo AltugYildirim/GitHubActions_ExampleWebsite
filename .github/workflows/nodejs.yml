@@ -71,11 +71,11 @@ jobs:
         echo "Pull Request Number - $JOB_STATUS_UNIT"
       if: always()
     # SAST    
-    #- name: SonarCloud Scan
-    #  uses: sonarsource/sonarcloud-github-action@master  
-    #  env:
-    #    GITHUB_TOKEN: ${{ secrets.github }}
-    #    SONAR_TOKEN: ${{ secrets.sonarcloud }}
+    - name: SonarCloud Scan
+     uses: sonarsource/sonarcloud-github-action@master  
+     env:
+       GITHUB_TOKEN: ${{ secrets.githubs }}
+       SONAR_TOKEN: ${{ secrets.sonarcloud_SUBJE }}
     # SCA     
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/node@master
