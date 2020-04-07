@@ -254,7 +254,8 @@ jobs:
   
   pr_for_master:
     if: github.event == 'Schedule'
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest  
+    steps:  
     - name: pull-request
       uses: repo-sync/pull-request@v2
       with:
