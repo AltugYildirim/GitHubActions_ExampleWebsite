@@ -14,7 +14,7 @@ on:
       - master
       - dev
       - feature/*
-#      - bug/*      
+      - bug/*      
 #  pull_request:
 #    branches:
 #      - master
@@ -80,7 +80,7 @@ jobs:
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/node@master
       env:
-        SNYK_TOKEN: ${{ secrets.snyk }}
+        SNYK_TOKEN: ${{ secrets.snyk_SUBJE }}
       with:
         command: monitor
         args: --severity-threshold=high
