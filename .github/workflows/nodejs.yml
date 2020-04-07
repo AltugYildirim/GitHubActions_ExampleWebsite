@@ -4,7 +4,7 @@ name: Node.js CI
 
 on:
   schedule:
-      - cron: '11/15 * * * *'
+      - cron: '12/15 * * * *'
   push:
     branches:
       # - master
@@ -21,7 +21,7 @@ on:
 
 jobs:
   build:
-    if: github.event_name == 'push
+    if: github.event_name == 'push'
     env:
       JOB_STATUS_UNIT: ok
       JOB_STATUS_SCA: ok
