@@ -258,9 +258,12 @@ jobs:
     - uses: actions/checkout@v2
     - name: pull-request
       uses: repo-sync/pull-request@v2
+    - name: Check outputs
+      run: |
+        git checkout -b step
       with:
         source_branch: "dev"                     # If blank, default: triggered branch
-        destination_branch: ""          # If blank, default: master
+        destination_branch: "master"          # If blank, default: master
         pr_title: "Pulling ${{ github.run_id }} into dev"
         pr_body: ":crown: *An automated PR*"  # Full markdown support, requires pr_title to be set
         #pr_reviewer: "wei,worker"             # Comma-separated list (no spaces)
