@@ -256,11 +256,11 @@ jobs:
     
     steps:  
     - uses: actions/checkout@v2
-    - name: pull-request
-      uses: repo-sync/pull-request@v2
     - name: Check outputs
       run: |
         git checkout -b step
+    - name: pull-request
+      uses: repo-sync/pull-request@v2
       with:
         source_branch: "dev"                     # If blank, default: triggered branch
         destination_branch: "master"          # If blank, default: master
