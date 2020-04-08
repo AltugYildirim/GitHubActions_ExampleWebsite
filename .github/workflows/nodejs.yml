@@ -5,7 +5,7 @@ name: Node.js CI
 ## pr için
 on:
   schedule:
-  - cron: '*/5 * * * *'
+  - cron: '30 9 * * *'
   push:
     branches:
       # - master
