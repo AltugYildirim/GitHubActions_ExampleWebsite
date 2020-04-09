@@ -260,7 +260,7 @@ jobs:
     
     steps:  
     - uses: actions/checkout@v2
-    - name: Check outputs
+    - name: Go to new branch
       run: |
         git checkout -b step
     - name: pull-request
