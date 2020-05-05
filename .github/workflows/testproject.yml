@@ -39,4 +39,4 @@ jobs:
     - run: npm install -g newman
     - run: ls
     - run: pwd
-    - run: npm run postman_collection.json -e postman_environment.json --working-dir .
+    - run: npm run postman_collection.json -e postman_environment.json --working-dir /home/runner/work/GitHubActions_ExampleWebsite/GitHubActions_ExampleWebsite
