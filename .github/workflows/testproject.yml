@@ -37,5 +37,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - run: npm install -g newman
+    - run: ls
+    - run: pwd
     - run: npm run postman_collection.json
-
