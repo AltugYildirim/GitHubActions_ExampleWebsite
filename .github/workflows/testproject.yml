@@ -37,7 +37,7 @@ jobs:
 #        node-version: ${{ matrix.node-version }}
 
 #    - run: npm install -g newman
-#    - run: ls
+    - run: ls
 #    - run: pwd
 #    - run: npm run /home/runner/work/GitHubActions_ExampleWebsite/GitHubActions_ExampleWebsite/postman_collection.json
-    - run: docker run -v ~/collections:/etc/newman -t postman/newman:ubuntu run "postman_collection.json.postman_collection"
+    - run: docker run -v collections:/etc/newman -t postman/newman:ubuntu run "postman_collection.json.postman_collection"
