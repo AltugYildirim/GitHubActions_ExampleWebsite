@@ -31,12 +31,13 @@ jobs:
 #        collection: postman_collection.json
 #        environment: postman_environment.json
 #        postmanApiKey: ${{ secrets.postmanApiKey }}
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+#    - name: Use Node.js ${{ matrix.node-version }}
+#      uses: actions/setup-node@v1
+#      with:
+#        node-version: ${{ matrix.node-version }}
 
-    - run: npm install -g newman
-    - run: ls
-    - run: pwd
-    - run: npm run /home/runner/work/GitHubActions_ExampleWebsite/GitHubActions_ExampleWebsite/postman_collection.json
+#    - run: npm install -g newman
+#    - run: ls
+#    - run: pwd
+#    - run: npm run /home/runner/work/GitHubActions_ExampleWebsite/GitHubActions_ExampleWebsite/postman_collection.json
+    - run: docker run -v ~/collections:/etc/newman -t postman/newman:ubuntu run "postman_collection.json"
