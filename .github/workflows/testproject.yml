@@ -27,3 +27,5 @@ jobs:
       with:
         collection: postman_collection.json
         environment: postman_environment.json
+        postmanApiKey: ${{ secrets.postmanApiKey }}
+
