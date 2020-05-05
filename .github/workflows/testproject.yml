@@ -16,16 +16,26 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x] 
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       
-    - uses: actions/checkout@master
-    - uses: matt-ball/newman-action@master
+#    - uses: actions/checkout@master
+#    - uses: matt-ball/newman-action@master
+#      with:
+#        collection: postman_collection.json
+#        environment: postman_environment.json
+#        postmanApiKey: ${{ secrets.postmanApiKey }}
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
       with:
-        collection: postman_collection.json
-        environment: postman_environment.json
-        postmanApiKey: ${{ secrets.postmanApiKey }}
+        node-version: ${{ matrix.node-version }}
+
+    - run: npm install -g newman
+    - run: npm run postman_collection.json
 
